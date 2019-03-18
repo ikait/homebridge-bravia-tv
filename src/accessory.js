@@ -77,7 +77,7 @@ class BRAVIA {
         req.end();
       });
     };
-    
+
     this.getIRCC = function(setIRCC) {
 
       return new Promise((resolve, reject) => {
@@ -165,8 +165,8 @@ class BRAVIA {
         break;
       case 6:
         name = config.name + ' Volume';
-        deviceType = Accessory.Categories.LIGHTBULB;
-        accessoryType = Service.Lightbulb;
+        deviceType = Accessory.Categories.OTHER;
+        accessoryType = Service.Speaker;
         break;
       default:
         break;
@@ -188,11 +188,11 @@ class BRAVIA {
 
     accessory.context.lastvolume = 35;
     accessory.context.maxvolume = 35;
-    
+
     accessory.context.pollinterval = 10000;
     accessory.context.offstatename = 'HOME';
     accessory.context.offstatenr = 0;
-    
+
     if(config.appsEnabled){
       accessory.context.favappname = this.storage.getItem('Sony_Apps')[0].title;
       accessory.context.favappnr = 0;
@@ -200,7 +200,7 @@ class BRAVIA {
       for(const i in allAccessories){allAccessories[i].context.maxapps = this.storage.getItem('Sony_Apps').length;}
       //accessory.context.maxapps = this.storage.getItem('Sony_Apps').length;
     }
-    
+
     if(config.channelsEnabled){
       accessory.context.favchannelname = this.storage.getItem('Sony_Channels')[0].title;
       accessory.context.favchannelnr = 0;
@@ -210,7 +210,7 @@ class BRAVIA {
       accessory.context.channelsourcename = 'tv:dvbt';
       accessory.context.channelsourcenr = 0;
     }
-	
+
     if(config.inputsEnabled){
       accessory.context.favinputname = this.storage.getItem('Sony_Inputs')[0].name;
       accessory.context.favinputnr = 0;
@@ -257,7 +257,7 @@ class BRAVIA {
 
     switch (type) {
       case 1: // tv
-      
+
         //Volume Parameter
         if(self.config.volumeEnabled){
           if (!service.testCharacteristic(Characteristic.MaxVolume))service.addCharacteristic(Characteristic.MaxVolume);
@@ -273,7 +273,7 @@ class BRAVIA {
             service.removeCharacteristic(service.getCharacteristic(Characteristic.MaxVolume));
           }
         }
-      
+
         //Input Parameter
         if(self.config.inputsEnabled){
           if (!service.testCharacteristic(Characteristic.FavInputNr))service.addCharacteristic(Characteristic.FavInputNr);
@@ -295,7 +295,7 @@ class BRAVIA {
             service.removeCharacteristic(service.getCharacteristic(Characteristic.FavInputName));
           }
         }
-        
+
         //Apps Parameter
         if(self.config.appsEnabled){
           if (!service.testCharacteristic(Characteristic.FavAppNr))service.addCharacteristic(Characteristic.FavAppNr);
@@ -317,7 +317,7 @@ class BRAVIA {
             service.removeCharacteristic(service.getCharacteristic(Characteristic.FavAppName));
           }
         }
-        
+
         //Channel Parameter
         if(self.config.channelsEnabled){
           if (!service.testCharacteristic(Characteristic.FavChannelNr))service.addCharacteristic(Characteristic.FavChannelNr);
@@ -367,9 +367,9 @@ class BRAVIA {
         if (!service.testCharacteristic(Characteristic.OffStateName))service.addCharacteristic(Characteristic.OffStateName);
         service.getCharacteristic(Characteristic.OffStateName)
           .updateValue(accessory.context.offstatename);
-        
+
         if (!service.testCharacteristic(Characteristic.PollInterval))service.addCharacteristic(Characteristic.PollInterval);
-        
+
         service.getCharacteristic(Characteristic.PollInterval)
           .setProps({
             maxValue: 100,
@@ -461,31 +461,31 @@ class BRAVIA {
                 }
               }
             } else {
-              
+
               if(!self.config.detectCEC && !self.config.extraInputs){
                 self.addOrRemoveInput(accessory, null, 'hdmi', true);
               }
-              
+
               if(self.config.detectCEC && !self.config.extraInputs){
                 self.addOrRemoveInput(accessory, null, 'hdmi', true);
-                self.addOrRemoveInput(accessory, null, 'cec', true); 
+                self.addOrRemoveInput(accessory, null, 'cec', true);
               }
               if (self.config.extraInputs && !self.config.detectCEC) {
                 self.addOrRemoveInput(accessory, null, 'hdmi', true);
                 self.addOrRemoveInput(accessory, null, 'extra', true);
               }
-              
+
               if(self.config.extraInputs && self.config.detectCEC){
                 self.addOrRemoveInput(accessory, null, 'all', true);
               }
             }
-            
+
             service.getCharacteristic(Characteristic.On)
               .updateValue(false)
               .on('set', self.setMainInput.bind(this, accessory, service));
-              
+
             self.getMainInput(accessory, service);
-            
+
           }
         }
 
@@ -494,7 +494,7 @@ class BRAVIA {
 
         service.getCharacteristic(Characteristic.On)
           .updateValue(false);
-          
+
         if (!service.testCharacteristic(Characteristic.TargetName)) {
           service.addCharacteristic(Characteristic.TargetName);
         }
@@ -547,7 +547,7 @@ class BRAVIA {
           })
           .updateValue(0)
           .on('set', this.setTargetChannel.bind(this, accessory, service));
-          
+
         //self.getChannels(service, accessory);
         self.getChannelOn(service, accessory);
 
@@ -665,7 +665,7 @@ class BRAVIA {
       }
     }
   }
-  
+
   removeCommands (commandCharacteristic, service) {
     const self = this;
     for (const remote in commandCharacteristic) {
@@ -809,7 +809,7 @@ class BRAVIA {
                   accessoryArray.push(newConfig);
                 }
               }
-              
+
               for (const device in resultArray) {
                 if (resultArray[device].meta == 'meta:hdmi') {
                   const parameter = {
@@ -951,7 +951,7 @@ class BRAVIA {
       }
     }
   }
-  
+
   removeHDMI (hdmiCharacteristic, service, uri) {
     const self = this;
     for (const hdmi in hdmiCharacteristic) {
@@ -967,7 +967,7 @@ class BRAVIA {
       }
     }
   }
-  
+
   removeEXTRA (extraCharacteristic, service) {
     const self = this;
     for (const extra in extraCharacteristic) {
@@ -979,7 +979,7 @@ class BRAVIA {
       }
     }
   }
-  
+
   removeCEC (cecCharacteristic, service) {
     const self = this;
     for (const cec in cecCharacteristic) {
@@ -991,25 +991,25 @@ class BRAVIA {
       }
     }
   }
-  
+
   getStates(accessory, service){
     const self = this;
     const allAccessories = self.accessories;
-    
+
     if(service.testCharacteristic(Characteristic.MaxVolume)){
       for(const j in allAccessories){
         allAccessories[j].context.maxvolume = service.getCharacteristic(Characteristic.MaxVolume).value;
       }
-    } 
-    
+    }
+
     if(service.testCharacteristic(Characteristic.PollInterval)){
       for(const j in allAccessories){
         allAccessories[j].context.pollinterval = (service.getCharacteristic(Characteristic.PollInterval).value * 1000);
       }
-    } 
-    
+    }
+
     if(service.testCharacteristic(Characteristic.OffStateNr) && service.testCharacteristic(Characteristic.OffStateName)){
-      const offStates = { 
+      const offStates = {
         off: 0,
         home: 1,
         channels: 2
@@ -1018,98 +1018,98 @@ class BRAVIA {
         if(service.getCharacteristic(Characteristic.OffStateNr).value == offStates.home){
           if(self.config.appsEnabled){
             setTimeout(function(){service.getCharacteristic(Characteristic.OffStateName).updateValue('HOME');},500);
-            allAccessories[j].context.offstatename = service.getCharacteristic(Characteristic.OffStateName).value; 
+            allAccessories[j].context.offstatename = service.getCharacteristic(Characteristic.OffStateName).value;
             allAccessories[j].context.offstatenr = 1;
           } else {
             self.log('Can\'t switch this setting because \'Apps\' is not enabled! Off State: OFF');
             setTimeout(function(){service.getCharacteristic(Characteristic.OffStateName).updateValue('OFF');},500);
             setTimeout(function(){service.getCharacteristic(Characteristic.OffStateNr).updateValue(2);},500);
-            allAccessories[j].context.offstatename = service.getCharacteristic(Characteristic.OffStateName).value; 
+            allAccessories[j].context.offstatename = service.getCharacteristic(Characteristic.OffStateName).value;
             allAccessories[j].context.offstatenr = 0;
           }
         } else if(service.getCharacteristic(Characteristic.OffStateNr).value == offStates.channels){
           if(self.config.channelsEnabled){
             setTimeout(function(){service.getCharacteristic(Characteristic.OffStateName).updateValue('CHANNEL');},500);
-            allAccessories[j].context.offstatename = service.getCharacteristic(Characteristic.OffStateName).value; 
+            allAccessories[j].context.offstatename = service.getCharacteristic(Characteristic.OffStateName).value;
             allAccessories[j].context.offstatenr = 2;
           } else {
             self.log('Can\'t switch this setting because \'Channels\' is not enabled! Off State: OFF');
             setTimeout(function(){service.getCharacteristic(Characteristic.OffStateName).updateValue('OFF');},500);
             setTimeout(function(){service.getCharacteristic(Characteristic.OffStateNr).updateValue(2);},500);
-            allAccessories[j].context.offstatename = service.getCharacteristic(Characteristic.OffStateName).value; 
+            allAccessories[j].context.offstatename = service.getCharacteristic(Characteristic.OffStateName).value;
             allAccessories[j].context.offstatenr = 0;
           }
         } else {
           setTimeout(function(){service.getCharacteristic(Characteristic.OffStateName).updateValue('OFF');},500);
-          allAccessories[j].context.offstatename = service.getCharacteristic(Characteristic.OffStateName).value; 
+          allAccessories[j].context.offstatename = service.getCharacteristic(Characteristic.OffStateName).value;
           allAccessories[j].context.offstatenr = 0;
         }
       }
     }
-    
+
     if(service.testCharacteristic(Characteristic.ChannelSourceNr) && service.testCharacteristic(Characteristic.ChannelSourceName)){
-      const channelSource = { 
+      const channelSource = {
         dvbt: 0,
         dvbc: 1
-      };	      	    
+      };
       for(const j in allAccessories){
         if(service.getCharacteristic(Characteristic.ChannelSourceNr).value == channelSource.dvbt){
           setTimeout(function(){service.getCharacteristic(Characteristic.ChannelSourceName).updateValue('tv:dvbt');},500);
-          allAccessories[j].context.channelsourcename = service.getCharacteristic(Characteristic.ChannelSourceName).value; 
+          allAccessories[j].context.channelsourcename = service.getCharacteristic(Characteristic.ChannelSourceName).value;
           allAccessories[j].context.channelsourcenr = 0;
         } else if(service.getCharacteristic(Characteristic.ChannelSourceNr).value == channelSource.dvbc){
           //setTimeout(function(){service.getCharacteristic(Characteristic.ChannelSourceName).updateValue('tv:dvbc');},500);
           setTimeout(function(){service.getCharacteristic(Characteristic.ChannelSourceName).updateValue('tv:dvbt');},500);
-          allAccessories[j].context.channelsourcename = service.getCharacteristic(Characteristic.ChannelSourceName).value; 
+          allAccessories[j].context.channelsourcename = service.getCharacteristic(Characteristic.ChannelSourceName).value;
           allAccessories[j].context.channelsourcenr = 1;
         }
       }
     }
-    
+
     if(service.testCharacteristic(Characteristic.FavInputNr) && service.testCharacteristic(Characteristic.FavInputName)){
       for(const j in allAccessories){
         const inputArray = self.storage.getItem('Sony_Inputs');
-        for(const inputs in inputArray){		    
+        for(const inputs in inputArray){
           if(service.getCharacteristic(Characteristic.FavInputNr).value == inputs){
             setTimeout(function(){service.getCharacteristic(Characteristic.FavInputName).updateValue(inputArray[inputs].name);},500);
-            allAccessories[j].context.favinputname = service.getCharacteristic(Characteristic.FavInputName).value; 
+            allAccessories[j].context.favinputname = service.getCharacteristic(Characteristic.FavInputName).value;
             allAccessories[j].context.favinputnr = service.getCharacteristic(Characteristic.FavInputNr).value;
             allAccessories[j].context.maxinputs = self.storage.getItem('Sony_Inputs').length;
-          } 
+          }
         }
       }
     }
-    
+
     if(service.testCharacteristic(Characteristic.FavAppNr) && service.testCharacteristic(Characteristic.FavAppName)){
       for(const j in allAccessories){
         const appsArray = self.storage.getItem('Sony_Apps');
         for(const app in appsArray){
           if(service.getCharacteristic(Characteristic.FavAppNr).value == app){
             setTimeout(function(){service.getCharacteristic(Characteristic.FavAppName).updateValue(appsArray[app].title);},500);
-            allAccessories[j].context.favappname = service.getCharacteristic(Characteristic.FavAppName).value; 
+            allAccessories[j].context.favappname = service.getCharacteristic(Characteristic.FavAppName).value;
             allAccessories[j].context.favappnr = service.getCharacteristic(Characteristic.FavAppNr).value;
             allAccessories[j].context.favappuri = appsArray[app].uri;
             allAccessories[j].context.maxapps = self.storage.getItem('Sony_Apps').length;
-          } 
+          }
         }
       }
     }
-    
+
     if(service.testCharacteristic(Characteristic.FavChannelNr) && service.testCharacteristic(Characteristic.FavChannelName)){
       for(const j in allAccessories){
         const channelsArray = self.storage.getItem('Sony_Channels');
         for(const channel in channelsArray){
           if(service.getCharacteristic(Characteristic.FavChannelNr).value == channel){
             setTimeout(function(){service.getCharacteristic(Characteristic.FavChannelName).updateValue(channelsArray[channel].title);},500);
-            allAccessories[j].context.favchannelname = service.getCharacteristic(Characteristic.FavChannelName).value; 
+            allAccessories[j].context.favchannelname = service.getCharacteristic(Characteristic.FavChannelName).value;
             allAccessories[j].context.favchannelnr = service.getCharacteristic(Characteristic.FavChannelNr).value;
             allAccessories[j].context.favchanneluri = channelsArray[channel].uri;
             allAccessories[j].context.maxchannels = self.storage.getItem('Sony_Channels').length;
-          } 
+          }
         }
       }
     }
-    
+
     setTimeout(function () {
       self.getStates(accessory, service);
     }, 1000);
@@ -1157,14 +1157,14 @@ class BRAVIA {
 
   setPower (state, callback) {
     const self = this;
-    
+
     const allAccessories = self.accessories;
-    
+
     if(!state){
       for(const i in allAccessories){
         if(allAccessories[i].getService(Service.Switch)||allAccessories[i].getService(Service.Lightbulb)){
           if(allAccessories[i].getService(Service.Switch)) allAccessories[i].getService(Service.Switch).getCharacteristic(Characteristic.On).updateValue(state);
-          if(allAccessories[i].getService(Service.Lightbulb)) allAccessories[i].getService(Service.Lightbulb).getCharacteristic(Characteristic.On).updateValue(state);         
+          if(allAccessories[i].getService(Service.Lightbulb)) allAccessories[i].getService(Service.Lightbulb).getCharacteristic(Characteristic.On).updateValue(state);
           for(const j in allAccessories[i].services){
             const services = allAccessories[i].services;
             if(services[j].displayName == self.config.name + ' Inputs'){
@@ -1175,7 +1175,7 @@ class BRAVIA {
                 }
               }
             }
-          }          
+          }
         }
       }
     } else {
@@ -1323,7 +1323,7 @@ class BRAVIA {
         callback(null, value);
       });
   }
-  
+
   getApps(service, accessory){
     const self = this;
     const allAccessories = self.accessories;
@@ -1347,7 +1347,7 @@ class BRAVIA {
           }
           accessory.context.maxapps = result.length;
           for(const i in allAccessories){
-            if(allAccessories[i].getService(Service.Switch)){       
+            if(allAccessories[i].getService(Service.Switch)){
               for(const j in allAccessories[i].services){
                 const services = allAccessories[i].services;
                 if(services[j].displayName == self.config.name + ' Apps'){
@@ -1375,7 +1375,7 @@ class BRAVIA {
                     }
                   }
                 }
-              }          
+              }
             }
           }
           setTimeout(function () {
@@ -1391,7 +1391,7 @@ class BRAVIA {
         }, 10 * 60 * 1000);
       });
   }
-  
+
   getAppStates (service, accessory) {
     const self = this;
     const targetApp = service.getCharacteristic(Characteristic.TargetApp).value;
@@ -1407,7 +1407,7 @@ class BRAVIA {
       self.getAppStates(service, accessory);
     }, 1000);
   }
-  
+
   getAppOn(service, accessory){
     const self = this;
     self.getContent('/sony/avContent', 'getPlayingContentInfo', '1.0', '1.0')
@@ -1441,7 +1441,7 @@ class BRAVIA {
         }, 60000);
       });
   }
-  
+
   setFavApp(accessory, service, state, callback){
     const self = this;
     const allAccessories = self.accessories;
@@ -1524,9 +1524,9 @@ class BRAVIA {
         });
     }
   }
-  
+
   setTargetApp(accessory, service, value, callback){
-    const self = this;   
+    const self = this;
     const apps = self.storage.getItem('Sony_Apps');
     var uri, title;
     for (var i = 0; i <= apps.length; i++) {
@@ -1609,7 +1609,7 @@ class BRAVIA {
         }, 60000);
       });
   }
-  
+
   getMainInput(accessory, mainService){
     const self = this;
     var active = false;
@@ -1631,14 +1631,14 @@ class BRAVIA {
       self.getMainInput(accessory, mainService);
     }, 1000);
   }
-  
+
   setMainInput (accessory, service, state, callback) {
     const self = this;
     var error = true;
     const allAccessories = self.accessories;
     if(state){
       for (const i in service.characteristics) {
-        const character = service.characteristics;         
+        const character = service.characteristics;
         if(character[i].displayName != 'On'&&character[i].displayName != 'Name'){
           if(character[i].displayName == accessory.context.favinputname){
             character[i].setValue(true);
@@ -1665,7 +1665,7 @@ class BRAVIA {
       }
     } else {
       for (const i in service.characteristics) {
-        const character = service.characteristics;         
+        const character = service.characteristics;
         if(character[i].displayName != 'On'&&character[i].displayName != 'Name'){
           if(character[i].value == true){
             character[i].setValue(false);
@@ -1816,7 +1816,7 @@ class BRAVIA {
       }
     }
   }
-  
+
   getChannelOn(service, accessory){
     const self = this;
     self.getContent('/sony/avContent', 'getPlayingContentInfo', '1.0', '1.0')
@@ -1827,7 +1827,7 @@ class BRAVIA {
 
         if ('result' in response) {
           const result = response.result[0];
-          
+
           if(result.uri.match('tv')){
             state = true;
             channelnr = parseInt(result.dispNum);
@@ -1837,15 +1837,15 @@ class BRAVIA {
             channelnr = 0;
             channelname = self.storage.getItem('Sony_Channels')[0].title;
           }
-          
+
         } else {
           state = false;
           channelnr = 0;
           channelname = self.storage.getItem('Sony_Channels')[0].title;
         }
-        
-        service.getCharacteristic(Characteristic.ChannelName).updateValue(channelname);  
-        service.getCharacteristic(Characteristic.TargetChannel).updateValue(channelnr);       
+
+        service.getCharacteristic(Characteristic.ChannelName).updateValue(channelname);
+        service.getCharacteristic(Characteristic.TargetChannel).updateValue(channelnr);
         service.getCharacteristic(Characteristic.On).updateValue(state);
 
         self.errorCount.channels = 0;
@@ -1866,9 +1866,9 @@ class BRAVIA {
         }, 60000);
       });
   }
-  
+
   setTargetChannel(accessory, service, value, callback){
-    const self = this;   
+    const self = this;
     const channels = self.storage.getItem('Sony_Channels');
     var uri, title;
     for (var i = 0; i <= channels.length; i++) {
@@ -1897,7 +1897,7 @@ class BRAVIA {
         callback(null, value);
       });
   }
-  
+
   setFavChannel(accessory, service, state, callback){
     const self = this;
     const allAccessories = self.accessories;
@@ -2037,10 +2037,10 @@ class BRAVIA {
       }
     }
   }
-  
+
   setCommand (charac, displayName, state, callback) {
-    const self = this;     
-    if(state){	    
+    const self = this;
+    if(state){
       self.getIRCC(charac.props.uri)
         .then((data) => {
           if(!data.match('error')){
