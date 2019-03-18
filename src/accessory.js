@@ -251,8 +251,8 @@ class BRAVIA {
       service = accessory.getService(Service.Switch);
     } else if (accessory.getService(Service.RemoteControl)) {
       service = accessory.getService(Service.RemoteControl);
-    } else if (accessory.getService(Service.Lightbulb)) {
-      service = accessory.getService(Service.Lightbulb);
+    } else if (accessory.getService(Service.Speaker)) {
+      service = accessory.getService(Service.Speaker);
     }
 
     switch (type) {
@@ -597,11 +597,11 @@ class BRAVIA {
           .on('set', this.setMute.bind(this))
           .updateValue(false);
 
-        if (!service.testCharacteristic(Characteristic.Brightness)) {
-          service.addCharacteristic(Characteristic.Brightness);
+        if (!service.testCharacteristic(Characteristic.Volume)) {
+          service.addCharacteristic(Characteristic.Volume);
         }
 
-        service.getCharacteristic(Characteristic.Brightness)
+        service.getCharacteristic(Characteristic.Volume)
           .setProps({
             maxValue: 100,
             minValue: 0,
@@ -1162,9 +1162,9 @@ class BRAVIA {
 
     if(!state){
       for(const i in allAccessories){
-        if(allAccessories[i].getService(Service.Switch)||allAccessories[i].getService(Service.Lightbulb)){
+        if(allAccessories[i].getService(Service.Switch)||allAccessories[i].getService(Service.Speaker)){
           if(allAccessories[i].getService(Service.Switch)) allAccessories[i].getService(Service.Switch).getCharacteristic(Characteristic.On).updateValue(state);
-          if(allAccessories[i].getService(Service.Lightbulb)) allAccessories[i].getService(Service.Lightbulb).getCharacteristic(Characteristic.On).updateValue(state);
+          if(allAccessories[i].getService(Service.Speaker)) allAccessories[i].getService(Service.Speaker).getCharacteristic(Characteristic.On).updateValue(state);
           for(const j in allAccessories[i].services){
             const services = allAccessories[i].services;
             if(services[j].displayName == self.config.name + ' Inputs'){
@@ -1180,9 +1180,9 @@ class BRAVIA {
       }
     } else {
       for(const i in allAccessories){
-        if(allAccessories[i].getService(Service.Lightbulb)) {
-          allAccessories[i].getService(Service.Lightbulb).getCharacteristic(Characteristic.On).updateValue(state);
-          allAccessories[i].getService(Service.Lightbulb).getCharacteristic(Characteristic.Brightness).updateValue(allAccessories[i].context.lastvolume);
+        if(allAccessories[i].getService(Service.Speaker)) {
+          allAccessories[i].getService(Service.Speaker).getCharacteristic(Characteristic.On).updateValue(state);
+          allAccessories[i].getService(Service.Speaker).getCharacteristic(Characteristic.Volume).updateValue(allAccessories[i].context.lastvolume);
         }
       }
     }
@@ -1241,7 +1241,7 @@ class BRAVIA {
         service.getCharacteristic(Characteristic.On)
           .updateValue(mute);
 
-        service.getCharacteristic(Characteristic.Brightness)
+        service.getCharacteristic(Characteristic.Volume)
           .updateValue(volume);
 
         self.errorCount.volume = 0;
@@ -1295,7 +1295,7 @@ class BRAVIA {
     if (value > accessory.context.maxvolume) {
       value = accessory.context.maxvolume;
       setTimeout(function(){
-        service.getCharacteristic(Characteristic.Brightness).updateValue(value);
+        service.getCharacteristic(Characteristic.Volume).updateValue(value);
       }, 800);
     }
 
